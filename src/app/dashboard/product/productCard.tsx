@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { Card, CardContent, CardMedia, Grid, Typography, Box, IconButton } from '@mui/material';
-import { Eye as EyeIcon } from '@phosphor-icons/react/dist/ssr/Eye'; // Import the Eye icon
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import { PencilSimple } from '@phosphor-icons/react';
-export default function ProductCards({ products, onEditProduct }: { products: any[], onEditProduct: (product: any) => void }) {
+import { PencilSimple, TrashSimple } from '@phosphor-icons/react';
+
+export default function ProductCards({ products, onEditProduct, onDeleteProduct }: { products: any[], onEditProduct: (product: any) => void, onDeleteProduct: (product: any) => void }) {
   const sliderSettings = {
     dots: true,
     infinite: true,
@@ -14,11 +14,11 @@ export default function ProductCards({ products, onEditProduct }: { products: an
     slidesToScroll: 1,
     autoplay: true,
   };
+
   return (
     <Grid container spacing={3}>
       {products.map((product) => (
         <Grid item xs={12} sm={6} md={4} key={product.product_id}>
-
           <Card
             sx={{
               maxWidth: 345,
@@ -37,7 +37,7 @@ export default function ProductCards({ products, onEditProduct }: { products: an
               sx={{
                 position: 'absolute',
                 top: 8,
-                right: 8,
+                right: 55, // Adjusted right position for delete button
                 zIndex: 10,
                 backgroundColor: '#fff',
                 borderRadius: '50%',
@@ -46,6 +46,22 @@ export default function ProductCards({ products, onEditProduct }: { products: an
               onClick={() => onEditProduct(product)}
             >
               <PencilSimple size={28} color="#15B392" />
+            </IconButton>
+
+            {/* Trash Icon to Delete */}
+            <IconButton
+              sx={{
+                position: 'absolute',
+                top: 8,
+                right: 8,
+                zIndex: 10,
+                backgroundColor: '#fff',
+                borderRadius: '50%',
+                boxShadow: '0 2px 5px rgba(0,0,0,0.15)',
+              }}
+              onClick={() => onDeleteProduct(product)}
+            >
+              <TrashSimple size={28} color="#F44336" />
             </IconButton>
 
             {/* Image Slider */}
@@ -112,7 +128,6 @@ export default function ProductCards({ products, onEditProduct }: { products: an
                   Rs. {product.discount || product.product_price}
                 </Typography>
               </Box>
-
             </CardContent>
           </Card>
         </Grid>

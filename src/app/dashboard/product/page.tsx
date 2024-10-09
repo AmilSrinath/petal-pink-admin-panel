@@ -67,7 +67,6 @@ export default function AddProductForm() {
   const fetchProducts = async () => {
     try {
       const response = await axios.get('http://localhost:4000/api/product/getAllData');
-      console.log('Fetched products:', response.data);
       setProducts(response.data);
     } catch (error) {
       console.error('Error fetching products:', error);
@@ -76,6 +75,38 @@ export default function AddProductForm() {
   useEffect(() => {
     fetchProducts();
   }, []);
+
+
+  // Delete product function
+  const handleDeleteProduct = async (product: any) => {
+    console.log('Deleting product with ID:', product.product_id); // Check if this is printed correctly
+    try {
+      const result = await Swal.fire({
+        title: 'Are you sure?',
+        text: 'Do you want to delete this product?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'Cancel',
+      });
+
+      if (result.isConfirmed) {
+        const response = await axios.delete(`http://localhost:4000/api/product/deleteProduct/${product.product_id}`);
+        console.log('Delete response:', response); // Check if this logs correctly
+
+        if (response.status === 200) {
+          Swal.fire('Deleted!', 'Your product has been deleted.', 'success');
+          fetchProducts(); // Refresh product list after delete
+        } else {
+          Swal.fire('Error', 'Failed to delete product.', 'error');
+        }
+      }
+    } catch (error) {
+      console.error('Error deleting product:', error); // Log any errors for troubleshooting
+      Swal.fire('Error', 'Something went wrong!', 'error');
+    }
+  };
+
 
   // Open form modal
   const handleClickOpen = () => setOpen(true);
@@ -435,7 +466,7 @@ export default function AddProductForm() {
         </DialogActions>
       </Dialog>
       {/* Product Cards */}
-      <ProductCards products={products} onEditProduct={handleEditProduct} />
+      <ProductCards products={products} onEditProduct={handleEditProduct} onDeleteProduct={handleDeleteProduct} />
     </>
   );
 }
